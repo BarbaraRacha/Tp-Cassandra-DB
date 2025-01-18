@@ -1,4 +1,4 @@
-# Tp7CassandraDbApplication
+# Cassandra avec Spring 
 
 Ce projet est une application Spring Boot qui réalise des opérations CRUD (Create, Read, Update, Delete) pour gérer les produits stockés dans une base de données Cassandra.
 
@@ -16,28 +16,39 @@ Avant de commencer, assurez-vous d'avoir les outils suivants installés sur votr
 1. Clonez le projet depuis le dépôt Git :
 
    ```bash
-   git clone https://github.com/votre-utilisateur/Tp7CassandraDbApplication.git
-   cd Tp7CassandraDbApplication
+   git clone https://github.com/BarbaraRacha/Tp-Cassandra-DB.git
+   cd Tp7-Cassandra-DB
    ```
 
-2. Lancez la base de données Cassandra avec Docker :
+2. Lancez la base de données Cassandra avec Docker à l'aide du fichier `docker-compose.yml` :
 
    ```bash
-   docker pull cassandra
-   docker run --name cassandra-db -p 9042:9042 -d cassandra
+   docker-compose up -d
    ```
 
-   ![Commande Docker Pull](images/docker-pull.png)
-   ![Commande Docker Run](images/docker-run.png)
+   Cette commande démarre une instance Cassandra à laquelle l'application pourra se connecter.
 
-3. Configurez l'application dans `application.yml` pour vous connecter à Cassandra.
+3. Ajouter les requetes affichées sur les screens pour configurer la base de données cassandra.
+![Swagger UI](images/img.png)
+![Swagger UI](images/img_1.png)
 
-4. Compilez et lancez l'application Spring Boot :
+4. Configurez l'application dans `application.yml` pour vous connecter à Cassandra (assurez-vous que les informations de connexion correspondent à celles définies dans `docker-compose.yml`).
+```
+spring.application.name=Tp7-Cassandra-DB
 
-   ```bash
-   mvn clean install
-   mvn spring-boot:run
-   ```
+spring.cassandra.local-datacenter=datacenter1
+spring.cassandra.contact-points=127.0.0.1
+spring.cassandra.port=9042
+spring.cassandra.keyspace-name=product_keyspace
+spring.cassandra.schema-action=CREATE_IF_NOT_EXISTS
+spring.cassandra.request.timeout=10s
+spring.cassandra.connection.connect-timeout=10s
+spring.cassandra.connection.init-query-timeout=10s
+
+```
+
+5. Compilez et lancez l'application Spring Boot :
+![Swagger UI](images/img_3.png)
 
 ## Fonctionnalités
 
@@ -48,9 +59,16 @@ L'application offre les fonctionnalités suivantes :
 - Modifier un produit
 - Supprimer un produit
 
-## Utilisation
+## Résultats
 
-### 1. Swagger UI
+### Sur Console: 
+![Swagger UI](images/img_2.png)
+
+### Sur Web: 
+![Swagger UI](images/img_4.png)
+
+
+### Sur Swagger UI
 
 Accédez à l'interface Swagger pour tester les endpoints de l'API à l'adresse suivante :
 
@@ -58,99 +76,42 @@ Accédez à l'interface Swagger pour tester les endpoints de l'API à l'adresse 
 http://localhost:8080/swagger-ui.html
 ```
 
-![Swagger UI](images/swagger-ui.png)
+L'interface Swagger vous permet d'explorer et de tester les fonctionnalités CRUD de manière interactive.
 
-### 2. Affichage des produits
+![Swagger UI](images/img_5.png)
 
-Vous pouvez consulter la liste des produits disponibles via l'interface web à :
+### Exemple d'Affichage des produits
 
-```
-http://localhost:8080/products
-```
-
-![Affichage Produits](images/products-view.png)
-
-### 3. Exécution des requêtes CRUD
-
-Voici des exemples de requêtes à effectuer :
-
-#### a) Ajouter un produit
-
-```http
-POST /api/products
-Content-Type: application/json
-
-{
-  "id": "1",
-  "name": "Produit A",
-  "price": 100.0,
-  "quantity": 10
-}
-```
-
-#### b) Consulter tous les produits
-
-```http
-GET /api/products
-```
-
-#### c) Modifier un produit
-
-```http
-PUT /api/products/1
-Content-Type: application/json
-
-{
-  "name": "Produit A modifié",
-  "price": 120.0,
-  "quantity": 15
-}
-```
-
-#### d) Supprimer un produit
-
-```http
-DELETE /api/products/1
-```
-
-## Screenshots
-
-### Commandes Docker
-
-![Commande Docker Logs](images/docker-logs.png)
-
-### Affichage des produits sur l'interface
-
-![Produits Web](images/products-view.png)
-
-### Interface Swagger
-
-![Swagger UI](images/swagger-ui.png)
+![Affichage Produits](images/img_6.png)
 
 ## Structure du projet
 
+Voici une vue d'ensemble de l'architecture du projet :
+
 ```
-Tp7CassandraDbApplication
+Tp7-Cassandra-DB
 ├── src
 │   ├── main
 │   │   ├── java
-│   │   │   └── com.example.tp7cassandradb
+│   │   │   └── racha.barbara.tp7cassandradb
+│   │   │       ├── helpers
+                  └── ProductFactory
+│   │   │       ├── repositories
+                  └── ProductRepository
+│   │   │       ├── services
+                  └── ProductService
+│   │   │       ├── tables
+                  └── Product
+│   │   │       └── web
+                  └── ProductController
 │   │   ├── resources
-│   │   │   ├── application.yml
-│   │   │   └── schema.cql
-├── images
-│   ├── docker-pull.png
-│   ├── docker-run.png
-│   ├── docker-logs.png
-│   ├── products-view.png
-│   ├── swagger-ui.png
+│   │       ├── application.yml
+├── target
+├── docker-compose.yml
 ├── pom.xml
-└── README.md
+├── README.md
+└── images
 ```
-
-## Licence
-
-Ce projet est sous licence MIT. Vous êtes libre de l'utiliser et de le modifier selon vos besoins.
 
 ---
 
